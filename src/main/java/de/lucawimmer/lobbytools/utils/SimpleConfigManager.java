@@ -1,7 +1,6 @@
 package de.lucawimmer.lobbytools.utils;
 
 import de.lucawimmer.lobbytools.LobbyTools;
-import de.lucawimmer.lobbytools.utils.SimpleConfig;
 import org.bukkit.plugin.Plugin;
 
 import java.io.*;

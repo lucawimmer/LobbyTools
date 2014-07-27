@@ -36,7 +36,7 @@ import org.bukkit.util.Vector;
 public class PlayerListener implements Listener {
 
     private SimpleConfig config = LobbyTools.getDefaultConfig();
-    
+
     @EventHandler
     public void clickInventory(InventoryClickEvent evt) {
         Player player = (Player) evt.getWhoClicked();
@@ -191,7 +191,7 @@ public class PlayerListener implements Listener {
             evt.getPlayer().teleport(config.getLocation("lobbytools.exact-spawn-loc"));
         }
 
-        for(int x = 0; x < 10; x = x+1) {
+        for (int x = 0; x < 10; x = x + 1) {
             if (config.getBoolean("lobbytools.hotbar.slot" + x + ".use")) {
                 ItemStack item = parseString(config.getString("lobbytools.hotbar.slot" + x + ".id"));
                 if (config.getString("lobbytools.hotbar.slot" + x + ".id") != null && config.getString("lobbytools.hotbar.slot" + x + ".name") != null) {
@@ -199,7 +199,7 @@ public class PlayerListener implements Listener {
                     im.setDisplayName(config.getString("lobbytools.hotbar.slot" + x + ".name").replaceAll("&", "§"));
                     item.setItemMeta(im);
                 }
-                evt.getPlayer().getInventory().setItem(x-1, item);
+                evt.getPlayer().getInventory().setItem(x - 1, item);
             }
         }
 
@@ -252,7 +252,7 @@ public class PlayerListener implements Listener {
             evt.getPlayer().getInventory().clear();
         }
 
-        for(int x = 0; x < 10; x = x+1) {
+        for (int x = 0; x < 10; x = x + 1) {
             if (config.getBoolean("lobbytools.hotbar.slot" + x + ".use")) {
                 ItemStack item = parseString(config.getString("lobbytools.hotbar.slot" + x + ".id"));
                 if (config.getString("lobbytools.hotbar.slot" + x + ".id") != null && config.getString("lobbytools.hotbar.slot" + x + ".name") != null) {
@@ -260,7 +260,7 @@ public class PlayerListener implements Listener {
                     im.setDisplayName(config.getString("lobbytools.hotbar.slot" + x + ".name").replaceAll("&", "§"));
                     item.setItemMeta(im);
                 }
-                evt.getPlayer().getInventory().setItem(x-1, item);
+                evt.getPlayer().getInventory().setItem(x - 1, item);
             }
         }
 
