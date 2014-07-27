@@ -1,0 +1,25 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+version = '1.1-RECOMMEND'
+
+project.ext.PLUGIN_NAME = "LobbyTools"
+project.ext.HOME = "$System.env.HOME"
+project.ext.BUKKIT_HOME = project.HOME + "/Craftbukkit"
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://repo.bukkit.org/content/repositories/releases"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.bukkit:bukkit:1.7.2-R0.3'
+}
+
+task copyPlugin(dependsOn: 'jar', type: Copy) {
+    from 'build/libs/'
+    into "D:\\Projekte\\Test Server\\plugins"
+}
