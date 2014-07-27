@@ -67,6 +67,9 @@ public class LobbyTools extends JavaPlugin {
         CONFIG.addDefault("lobbytools.disable-falldamage", true);
         CONFIG.addDefault("lobbytools.disable-alldamage", true);
         CONFIG.addDefault("lobbytools.disable-hunger", true);
+        CONFIG.addDefault("lobbytools.enable-teleport-height", false);
+        CONFIG.addDefault("lobbytools.teleport-height", 0);
+        CONFIG.addDefault("lobbytools.teleport-height-location", "world,0,0,0,0,0");
         CONFIG.addDefault("lobbytools.clearinv", true);
         CONFIG.addDefault("lobbytools.hotbar-items-on-death", true);
         CONFIG.addDefault("lobbytools.hotbar.slot1.use", false);

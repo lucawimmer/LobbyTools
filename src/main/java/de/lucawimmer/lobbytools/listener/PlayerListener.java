@@ -234,6 +234,13 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        if (config.getBoolean("lobbytools.enable-teleport-height"))
+            if (e.getPlayer().getLocation().getY() < config.getInt("lobbytools.teleport-height"))
+                e.getPlayer().teleport(config.getLocation("lobbytools.teleport-height-location"));
+    }
+
+    @EventHandler
     public void onFoodLevelChange(FoodLevelChangeEvent event) {
         if (config.getBoolean("lobbytools.disable-hunger")) {
             event.setCancelled(true);
