@@ -57,7 +57,7 @@ public class LobbyToolsCommand implements CommandExecutor {
             else if (!sender.hasPermission("lobbytools.admin.setspawn") || !sender.hasPermission("lobbytools.admin.globalmute"))
                 sender.sendMessage("§c[§6LobbyTools§c] §fYou don't have the permissions to do that!");
             else
-                sender.sendMessage("§c[§6LobbyTools§c] §fWrong syntax! Use /lobbytools <reload/toggle/globalmute/setpsawn>");
+                sender.sendMessage("§c[§6LobbyTools§c] §fWrong syntax! Use /lobbytools <reload/toggle/globalmute/setspawn/settploc>");
         }
         return true;
     }
