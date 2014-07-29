@@ -16,8 +16,10 @@ package de.lucawimmer.lobbytools.listener;
 import de.lucawimmer.lobbytools.LobbyTools;
 import de.lucawimmer.lobbytools.utils.SimpleConfig;
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,163 +35,181 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
+import java.util.HashSet;
+
 public class PlayerListener implements Listener {
 
     private SimpleConfig config = LobbyTools.getDefaultConfig();
 
+    public static Entity[] getNearbyEntities(Location l, int radius) {
+        int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
+        HashSet<Entity> radiusEntities = new HashSet<Entity>();
+        for (int chX = 0 - chunkRadius; chX <= chunkRadius; chX++) {
+            for (int chZ = 0 - chunkRadius; chZ <= chunkRadius; chZ++) {
+                int x = (int) l.getX(), y = (int) l.getY(), z = (int) l.getZ();
+                for (Entity e : new Location(l.getWorld(), x + (chX * 16), y, z + (chZ * 16)).getChunk().getEntities()) {
+                    if (e.getLocation().distance(l) <= radius && e.getLocation().getBlock() != l.getBlock())
+                        radiusEntities.add(e);
+                }
+            }
+        }
+        return radiusEntities.toArray(new Entity[radiusEntities.size()]);
+    }
+
     @EventHandler
-    public void clickInventory(InventoryClickEvent evt) {
-        Player player = (Player) evt.getWhoClicked();
+    public void clickInventory(InventoryClickEvent e) {
+        Player player = (Player) e.getWhoClicked();
         if (config.getBoolean("lobbytools.disable-inventory-move")) {
             if (config.getBoolean("lobbytools.use-permissions")) {
                 if (config.getBoolean("lobbytools.use-per-world-permissions")) {
                     if (!player.hasPermission("lobbytools." + player.getWorld().getName() + ".allowinventory")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 } else {
                     if (!player.hasPermission("lobbytools.allowinventory")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 }
             } else {
                 if (!LobbyTools.TOGGLE.contains(player))
-                    evt.setCancelled(true);
+                    e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void onMoveItem(InventoryMoveItemEvent evt) {
-        if (!(evt.getSource().getHolder() instanceof Player))
+    public void onMoveItem(InventoryMoveItemEvent e) {
+        if (!(e.getSource().getHolder() instanceof Player))
             return;
 
-        Player player = (Player) evt.getSource().getHolder();
+        Player player = (Player) e.getSource().getHolder();
         if (config.getBoolean("lobbytools.disable-inventory-move")) {
             if (config.getBoolean("lobbytools.use-permissions")) {
                 if (config.getBoolean("lobbytools.use-per-world-permissions")) {
                     if (!player.hasPermission("lobbytools." + player.getWorld().getName() + ".allowinventory")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 } else {
                     if (!player.hasPermission("lobbytools.allowinventory")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 }
             } else {
                 if (!LobbyTools.TOGGLE.contains(player))
-                    evt.setCancelled(true);
+                    e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void itemDrop(PlayerDropItemEvent evt) {
-        Player player = evt.getPlayer();
+    public void itemDrop(PlayerDropItemEvent e) {
+        Player player = e.getPlayer();
         if (config.getBoolean("lobbytools.disable-item-drop")) {
             if (config.getBoolean("lobbytools.use-permissions")) {
                 if (config.getBoolean("lobbytools.use-per-world-permissions")) {
                     if (!player.hasPermission("lobbytools." + player.getWorld().getName() + ".allowitemdrop")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 } else {
                     if (!player.hasPermission("lobbytools.allowitemdrop")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 }
 
             } else {
                 if (!LobbyTools.TOGGLE.contains(player))
-                    evt.setCancelled(true);
+                    e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void itemPickup(PlayerPickupItemEvent evt) {
-        Player player = evt.getPlayer();
+    public void itemPickup(PlayerPickupItemEvent e) {
+        Player player = e.getPlayer();
         if (config.getBoolean("lobbytools.disable-item-pickup")) {
             if (config.getBoolean("lobbytools.use-permissions")) {
                 if (config.getBoolean("lobbytools.use-per-world-permissions")) {
                     if (!player.hasPermission("lobbytools." + player.getWorld().getName() + ".allowitempickup")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 } else {
                     if (!player.hasPermission("lobbytools.allowitempickup")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 }
 
             } else {
                 if (!LobbyTools.TOGGLE.contains(player))
-                    evt.setCancelled(true);
+                    e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void blockBreak(BlockBreakEvent evt) {
-        Player player = evt.getPlayer();
+    public void blockBreak(BlockBreakEvent e) {
+        Player player = e.getPlayer();
         if (config.getBoolean("lobbytools.disable-build")) {
             if (config.getBoolean("lobbytools.use-permissions")) {
                 if (config.getBoolean("lobbytools.use-per-world-permissions")) {
                     if (!player.hasPermission("lobbytools." + player.getWorld().getName() + ".allowbuild")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 } else {
                     if (!player.hasPermission("lobbytools.allowbuild")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 }
             } else {
                 if (!LobbyTools.TOGGLE.contains(player))
-                    evt.setCancelled(true);
+                    e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void blockPlace(BlockPlaceEvent evt) {
-        Player player = evt.getPlayer();
+    public void blockPlace(BlockPlaceEvent e) {
+        Player player = e.getPlayer();
         if (config.getBoolean("lobbytools.disable-build")) {
             if (config.getBoolean("lobbytools.use-permissions")) {
                 if (config.getBoolean("lobbytools.use-per-world-permissions")) {
                     if (!player.hasPermission("lobbytools." + player.getWorld().getName() + ".allowbuild")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 } else {
                     if (!player.hasPermission("lobbytools.allowbuild")) {
                         if (!LobbyTools.TOGGLE.contains(player))
-                            evt.setCancelled(true);
+                            e.setCancelled(true);
                     }
                 }
 
             } else {
                 if (!LobbyTools.TOGGLE.contains(player))
-                    evt.setCancelled(true);
+                    e.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent evt) {
-        if (config.getBoolean("lobbytools.clearinv")) {
-            evt.getPlayer().getInventory().clear();
-        }
+    public void onJoin(PlayerJoinEvent e) {
+        if (config.getBoolean("lobbytools.clearinv"))
+            e.getPlayer().getInventory().clear();
 
-        if (config.getBoolean(("lobbytools.use-exact-spawn"))) {
-            evt.getPlayer().teleport(config.getLocation("lobbytools.exact-spawn-loc"));
-        }
+        if (config.getBoolean(("lobbytools.use-exact-spawn")))
+            e.getPlayer().teleport(config.getLocation("lobbytools.exact-spawn-loc"));
+
+        if (config.getBoolean("lobbytools.disable-join-message"))
+            e.setJoinMessage(null);
 
         for (int x = 0; x < 10; x = x + 1) {
             if (config.getBoolean("lobbytools.hotbar.slot" + x + ".use")) {
@@ -199,21 +219,21 @@ public class PlayerListener implements Listener {
                     im.setDisplayName(config.getString("lobbytools.hotbar.slot" + x + ".name").replaceAll("&", "§"));
                     item.setItemMeta(im);
                 }
-                evt.getPlayer().getInventory().setItem(x - 1, item);
+                e.getPlayer().getInventory().setItem(x - 1, item);
             }
         }
 
     }
 
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent evt) {
+    public void onChat(AsyncPlayerChatEvent e) {
         if (config.getBoolean("lobbytools.disable-chat")) {
-            if (!LobbyTools.TOGGLE.contains(evt.getPlayer()))
-                evt.setCancelled(true);
+            if (!LobbyTools.TOGGLE.contains(e.getPlayer()))
+                e.setCancelled(true);
         }
         if (LobbyTools.CHAT) {
-            if (!LobbyTools.TOGGLE.contains(evt.getPlayer()))
-                evt.setCancelled(true);
+            if (!LobbyTools.TOGGLE.contains(e.getPlayer()))
+                e.setCancelled(true);
         }
     }
 
@@ -248,15 +268,15 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent evt) {
+    public void onDeath(PlayerDeathEvent e) {
         if (config.getBoolean("lobbytools.disable-death-messages"))
-            evt.setDeathMessage(null);
+            e.setDeathMessage(null);
     }
 
     @EventHandler
-    public void onRespawn(PlayerRespawnEvent evt) {
+    public void onRespawn(PlayerRespawnEvent e) {
         if (config.getBoolean("lobbytools.clearinv")) {
-            evt.getPlayer().getInventory().clear();
+            e.getPlayer().getInventory().clear();
         }
 
         for (int x = 0; x < 10; x = x + 1) {
@@ -267,7 +287,7 @@ public class PlayerListener implements Listener {
                     im.setDisplayName(config.getString("lobbytools.hotbar.slot" + x + ".name").replaceAll("&", "§"));
                     item.setItemMeta(im);
                 }
-                evt.getPlayer().getInventory().setItem(x - 1, item);
+                e.getPlayer().getInventory().setItem(x - 1, item);
             }
         }
 
@@ -283,35 +303,45 @@ public class PlayerListener implements Listener {
         return new ItemStack(Material.getMaterial(matId));
     }
 
-
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent evt) {
-        Player player = evt.getPlayer();
-        if (evt.getTo().getBlockX() == evt.getFrom().getBlockX() &&
-                evt.getTo().getBlockY() == evt.getFrom().getBlockY() &&
-                evt.getTo().getBlockZ() == evt.getFrom().getBlockZ()) {
+    public void onPlayerMove(PlayerMoveEvent e) {
+        Player player = e.getPlayer();
+        if (e.getTo().getBlockX() == e.getFrom().getBlockX() &&
+                e.getTo().getBlockY() == e.getFrom().getBlockY() &&
+                e.getTo().getBlockZ() == e.getFrom().getBlockZ()) {
             return;
         }
 
 
         if (config.getBoolean("lobbytools.enable-trampoline")) {
-            if (evt.getPlayer().getLocation().getWorld().getBlockAt(evt.getPlayer().getLocation()).getType() == Material.getMaterial(171)) {
-                if (evt.getPlayer().getLocation().getWorld().getBlockAt(evt.getPlayer().getLocation()).getRelative(0, -1, 0).getType() == Material.getMaterial(config.getInt("lobbytools.trampoline-id"))) {
-                    evt.getPlayer().setVelocity(new Vector(evt.getPlayer().getVelocity().getX(), config.getInt("lobbytools.trampoline-height"), evt.getPlayer().getVelocity().getZ()));
+            if (e.getPlayer().getLocation().getWorld().getBlockAt(e.getPlayer().getLocation()).getType() == Material.getMaterial(171)) {
+                if (e.getPlayer().getLocation().getWorld().getBlockAt(e.getPlayer().getLocation()).getRelative(0, -1, 0).getType() == Material.getMaterial(config.getInt("lobbytools.trampoline-id"))) {
+                    e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), config.getInt("lobbytools.trampoline-height"), e.getPlayer().getVelocity().getZ()));
                 }
             }
         }
 
         if (config.getBoolean("lobbytools.enable-launchpad")) {
-            Material blockid = evt.getPlayer().getLocation().getWorld().getBlockAt(evt.getPlayer().getLocation()).getType();
+            Material blockid = e.getPlayer().getLocation().getWorld().getBlockAt(e.getPlayer().getLocation()).getType();
             if (blockid == Material.STONE_PLATE || blockid == Material.GOLD_PLATE || blockid == Material.IRON_PLATE || blockid == Material.WOOD_PLATE) {
-                if (evt.getPlayer().getLocation().getWorld().getBlockAt(evt.getPlayer().getLocation()).getRelative(0, -1, 0).getType() == Material.getMaterial(config.getInt("lobbytools.launchpad-id"))) {
-                    evt.getPlayer().setVelocity(evt.getPlayer().getLocation().getDirection().multiply(config.getInt("lobbytools.launchpad-speed")));
-                    evt.getPlayer().setVelocity(new Vector(evt.getPlayer().getVelocity().getX(), 1.0D, evt.getPlayer().getVelocity().getZ()));
+                if (e.getPlayer().getLocation().getWorld().getBlockAt(e.getPlayer().getLocation()).getRelative(0, -1, 0).getType() == Material.getMaterial(config.getInt("lobbytools.launchpad-id"))) {
+                    e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(config.getInt("lobbytools.launchpad-speed")));
+                    e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), 1.0D, e.getPlayer().getVelocity().getZ()));
                     player.playSound(player.getLocation(), Sound.WITHER_SHOOT, 1, 1);
-                    player.getWorld().playEffect(player.getLocation(), Effect.SMOKE, 1);
+                    for (Entity entity : getNearbyEntities(e.getPlayer().getLocation(), 30)) {
+                        if (entity instanceof Player)
+                            ((Player) entity).playEffect(e.getPlayer().getLocation(), Effect.ENDER_SIGNAL, 4);
+                    }
                 }
             }
         }
     }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        if (config.getBoolean("lobbytools.disable-quit-message"))
+            e.setQuitMessage(null);
+    }
+
+
 }

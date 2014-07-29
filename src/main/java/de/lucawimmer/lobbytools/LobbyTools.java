@@ -58,9 +58,11 @@ public class LobbyTools extends JavaPlugin {
         CONFIG.addDefault("lobbytools.disable-build", true);
         CONFIG.addDefault("lobbytools.disable-death-messages", true);
         CONFIG.addDefault("lobbytools.disable-chat", false);
+        CONFIG.addDefault("lobbytools.disable-join-message", true);
+        CONFIG.addDefault("lobbytools.disable-quit-message", true);
         CONFIG.addDefault("lobbytools.enable-launchpad", true);
         CONFIG.addDefault("lobbytools.launchpad-id", 152);
-        CONFIG.addDefault("lobbytools.launchpad-speed", true);
+        CONFIG.addDefault("lobbytools.launchpad-speed", 6);
         CONFIG.addDefault("lobbytools.enable-trampoline", true);
         CONFIG.addDefault("lobbytools.trampoline-id", 3);
         CONFIG.addDefault("lobbytools.trampoline-height", 15);
