@@ -6,7 +6,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ public class SimpleConfig {
     private File file;
     private FileConfiguration config;
 
-    public SimpleConfig(InputStream configStream, File configFile, int comments, Plugin plugin) {
+    public SimpleConfig(InputStream configStream, File configFile, int comments, JavaPlugin plugin) {
         this.comments = comments;
         this.manager = new SimpleConfigManager(plugin);
 
@@ -152,6 +152,20 @@ public class SimpleConfig {
     public void addDefault(String path, Object value) {
         if (!this.config.isSet(path))
             this.config.set(path, value);
+    }
+
+    public void addDefault(String path, Object value, String[] comment) {
+        if (!this.config.isSet(path)) {
+            for (String comm : comment) {
+
+                if (!this.config.contains(path)) {
+                    this.config.set(manager.getPluginName() + "_COMMENT_" + comments, " " + comm);
+                    comments++;
+                }
+
+            }
+            this.config.set(path, value);
+        }
     }
 
     public void setHeader(String[] header) {

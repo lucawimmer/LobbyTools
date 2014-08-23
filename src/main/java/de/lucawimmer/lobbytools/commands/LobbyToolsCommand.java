@@ -44,11 +44,11 @@ public class LobbyToolsCommand implements CommandExecutor {
                 sender.sendMessage("§c[§6LobbyTools§c] §fThe LobbyTools.CHAT is now open.");
             }
         } else if (args.length == 1 && (args[0].equalsIgnoreCase("setspawn") || args[0].equalsIgnoreCase("spawnset") || args[0].equalsIgnoreCase("sp")) && sender.hasPermission("lobbytools.admin.setspawn") && !(sender instanceof ConsoleCommandSender)) {
-            config.saveLocation("lobbytools.exact-spawn-loc", ((Player) sender).getLocation());
+            config.saveLocation("exact-spawn-loc", ((Player) sender).getLocation());
             sender.sendMessage("§c[§6LobbyTools§c] §fYou have set the exact spawn-point.");
             config.saveConfig();
         } else if (args.length == 1 && (args[0].equalsIgnoreCase("settploc") || args[0].equalsIgnoreCase("settl") || args[0].equalsIgnoreCase("setteleport")) && sender.hasPermission("lobbytools.admin.teleportloc") && !(sender instanceof ConsoleCommandSender)) {
-            config.saveLocation("lobbytools.teleport-height-location", ((Player) sender).getLocation());
+            config.saveLocation("teleport-height-location", ((Player) sender).getLocation());
             sender.sendMessage("§c[§6LobbyTools§c] §fYou have set the teleport-height location.");
             config.saveConfig();
         } else {

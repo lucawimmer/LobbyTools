@@ -1,20 +1,19 @@
 package de.lucawimmer.lobbytools.utils;
 
-import de.lucawimmer.lobbytools.LobbyTools;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.nio.charset.Charset;
 
 public class SimpleConfigManager {
 
-    private Plugin plugin;
+    private JavaPlugin plugin;
 
     /*
     * Manage custom configurations and files
     */
-    public SimpleConfigManager(Plugin plugin) {
-        this.plugin = LobbyTools.getPlugin();
+    public SimpleConfigManager(JavaPlugin plugin) {
+        this.plugin = plugin;
     }
 
     /*
@@ -279,7 +278,7 @@ public class SimpleConfigManager {
                 String comment = "#" + line.trim().substring(line.indexOf(":") + 1);
 
                 if (comment.startsWith("# +-")) {
- 
+
                     /*
                     * If header line = 0 then it is
                     * header start, if it's equal
@@ -301,7 +300,7 @@ public class SimpleConfigManager {
                     }
 
                 } else {
- 
+
                     /*
                     * Last line = 0 - Comment
                     * Last line = 1 - Normal path

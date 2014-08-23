@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
 sourceCompatibility = 1.5
-version = '1.4-RECOMMEND'
+version = '2.0-RECOMMEND'
 
 project.ext.PLUGIN_NAME = "LobbyTools"
 project.ext.HOME = "$System.env.HOME"
