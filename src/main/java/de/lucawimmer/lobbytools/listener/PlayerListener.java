@@ -26,6 +26,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -165,14 +166,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onFrameDamage(EntityDamageEvent e) {
-        if (e.getEntity() instanceof Player) {
-            if (config.getBoolean("disable-build")) {
-                if (!hasPermissions((Player) e.getEntity(), "lobbytools.allowbuild"))
-                    e.setCancelled(true);
+    public void onFrameDamage(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof ItemFrame) {
+            if (e.getDamager() instanceof Player) {
+                if (config.getBoolean("disable-build")) {
+                    if (!hasPermissions((Player) e.getDamager(), "lobbytools.allowbuild"))
+                        e.setCancelled(true);
+                }
+            } else {
+                e.setCancelled(true);
             }
-        } else {
-            e.setCancelled(true);
         }
     }
 
