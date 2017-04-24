@@ -22,7 +22,7 @@ project.ext.BUKKIT_HOME = project.HOME + "/Craftbukkit"
 
 
 repositories {
-    maven { url "http://hub.spigotmc.org/nexus/content/repositories/public/" }
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/public/" }
 }
 
 dependencies {
