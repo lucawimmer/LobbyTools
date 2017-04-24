@@ -15,11 +15,16 @@ package de.lucawimmer.lobbytools;
 
 
 import de.lucawimmer.lobbytools.commands.LobbyToolsCommand;
+import de.lucawimmer.lobbytools.listener.BungeeCordListener;
 import de.lucawimmer.lobbytools.listener.PlayerListener;
+import de.lucawimmer.lobbytools.tasks.CheckServerTask;
 import de.lucawimmer.lobbytools.utils.Metrics;
 import de.lucawimmer.lobbytools.utils.SimpleConfig;
 import de.lucawimmer.lobbytools.utils.SimpleConfigManager;
+import de.lucawimmer.skyplayers.SkyPlayers;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -33,6 +38,7 @@ public class LobbyTools extends JavaPlugin {
     public static boolean CHAT = false;
     private static SimpleConfig CONFIG;
     private static JavaPlugin PLUGIN;
+    private static SkyPlayers SKYPLAYERS_PLUGIN;
 
     public SimpleConfigManager manager;
 
@@ -46,11 +52,12 @@ public class LobbyTools extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        PLUGIN = this;
+        PLUGIN = this; //permissions updaten, einzelpermission für drop und so zeug, warps,
         this.manager = new SimpleConfigManager(this);
-        String[] header = {"LobbyTools", "Developed and written by", "magl1te", "skypvp.cc:25565"};
+        String[] header = {"LobbyTools", "Developed and written by", "magl1te", "info@lucawimmer.de"};
         CONFIG = manager.getNewConfig("config.yml", header);
         CONFIG.addDefault("use-permissions", false, new String[]{"Enable permissions? Please note to enter the worlds below"});
+        CONFIG.addDefault("enable-skyplayers-support", false, new String[]{"Enable Skylayers Support? Need a BungeeCord proxy"});
         CONFIG.addDefault("world-permissions", Arrays.asList("world", "lobby", "hub"), new String[]{"Enter all worlds you want to enable permissions", "Enter \"all\" or \"*\" to enable permissions for all worlds"});
         CONFIG.addDefault("auto-toggle-op", false, new String[]{"Should op players dont have to type /lt t?"});
         CONFIG.addDefault("use-exact-spawn", false, new String[]{"Want to spawn at a exact location?"});
@@ -68,9 +75,11 @@ public class LobbyTools extends JavaPlugin {
         CONFIG.addDefault("disabled-commands-list", Arrays.asList("/warp", "/server"), new String[]{"Which commands you want to disable?", "Enter \"all\" or \"*\" for all"});
         CONFIG.addDefault("disable-join-message", true, new String[]{"Disable the join messages?"});
         CONFIG.addDefault("disable-quit-message", true, new String[]{"Disable the quit messages?"});
+        CONFIG.addDefault("disable-weather", true, new String[]{"Disable Weather chaning?"});
         CONFIG.addDefault("enable-launchpad", true, new String[]{"Enable the launchpad?"});
         CONFIG.addDefault("launchpad-id", 152, new String[]{"Launchpad block under the pressure plate [Redstone Block]"});
         CONFIG.addDefault("launchpad-speed", 6, new String[]{"Specify the launchpad speed"});
+        CONFIG.addDefault("launchpad-height", 1, new String[]{"Specify the launchpad height"});
         CONFIG.addDefault("enable-trampoline", true, new String[]{"Enable the trampoline?"});
         CONFIG.addDefault("trampoline-id", 19, new String[]{"Whats your trampoline block id? [Sponge]"});
         CONFIG.addDefault("trampoline-height", 10, new String[]{"Specify the trampoline jump height"});
@@ -118,6 +127,7 @@ public class LobbyTools extends JavaPlugin {
         CONFIG.addDefault("hotbar.slot9.execute-command", false);
         CONFIG.addDefault("hotbar.slot9.command", "");
         CONFIG.addDefault("hotbar.slot9.use", false);
+        CONFIG.addDefault("check-servers", Arrays.asList("lobby"));
         CONFIG.saveConfig();
         getLogger().info("Config initialized");
 
@@ -129,5 +139,25 @@ public class LobbyTools extends JavaPlugin {
             metrics.start();
         } catch (IOException ignored) {
         }
+
+        if (!CONFIG.getBoolean("enable-neroplayers-support")) return;
+        Bukkit.broadcastMessage("ASd");
+        SKYPLAYERS_PLUGIN = getNeroPlayers();
+        if (SKYPLAYERS_PLUGIN != null) {
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener());
+        }
+
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new CheckServerTask(), 20L, 20L * 5);
+
+
+    }
+
+    private SkyPlayers getNeroPlayers() {
+        Plugin plugin = getServer().getPluginManager().getPlugin("NeroPlayers");
+        if (plugin == null || !(plugin instanceof SkyPlayers)) {
+            return null;
+        }
+        return (SkyPlayers) plugin;
     }
 }

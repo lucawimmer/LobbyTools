@@ -1,6 +1,7 @@
 name: LobbyTools
 main: de.lucawimmer.lobbytools.LobbyTools
-version: 1.4
+version: 2.0
+softdepend: [NeroPlayers]
 authors:
  - magl1te
 description: Some tool for a perfect lobby

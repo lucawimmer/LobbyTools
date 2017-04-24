@@ -34,6 +34,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -315,6 +316,11 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onWeatherChange(WeatherChangeEvent event) {
+        if (LobbyTools.getDefaultConfig().getBoolean("disable-weather")) event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onMove(PlayerMoveEvent e) {
         if (config.getBoolean("enable-teleport-height"))
             if (e.getPlayer().getLocation().getY() < config.getInt("teleport-height"))
@@ -374,7 +380,7 @@ public class PlayerListener implements Listener {
             if (blockid == Material.STONE_PLATE || blockid == Material.GOLD_PLATE || blockid == Material.IRON_PLATE || blockid == Material.WOOD_PLATE) {
                 if (e.getPlayer().getLocation().getWorld().getBlockAt(e.getPlayer().getLocation()).getRelative(0, -1, 0).getType() == Material.getMaterial(config.getInt("launchpad-id"))) {
                     e.getPlayer().setVelocity(e.getPlayer().getLocation().getDirection().multiply(config.getInt("launchpad-speed")));
-                    e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), 1.0D, e.getPlayer().getVelocity().getZ()));
+                    e.getPlayer().setVelocity(new Vector(e.getPlayer().getVelocity().getX(), config.getInt("launchpad-height"), e.getPlayer().getVelocity().getZ()));
                     player.playSound(player.getLocation(), Sound.WITHER_SHOOT, 1, 1);
                     for (Entity entity : getNearbyEntities(e.getPlayer().getLocation(), 30)) {
                         if (entity instanceof Player)

@@ -1,7 +1,20 @@
 apply plugin: 'java'
+apply plugin: 'rebel'
 
 sourceCompatibility = 1.5
-version = '2.0-RECOMMEND'
+version = '2.1'
+
+jar.dependsOn(generateRebel)
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'org.zeroturnaround', name: 'gradle-jrebel-plugin', version: '1.1.2'
+    }
+}
 
 project.ext.PLUGIN_NAME = "LobbyTools"
 project.ext.HOME = "$System.env.HOME"
@@ -9,15 +22,12 @@ project.ext.BUKKIT_HOME = project.HOME + "/Craftbukkit"
 
 
 repositories {
-    mavenCentral()
-    maven {
-        url "http://repo.bukkit.org/content/repositories/releases"
-    }
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/public/" }
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile 'org.bukkit:bukkit:1.7.2-R0.3'
+    compile group: 'org.bukkit', name: 'bukkit', version: '1.8.8-R0.1-SNAPSHOT'
+    compile files('libs/SkyPlayers-1.0-DEVELOPMENT.jar')
 }
 
 [compileJava, compileTestJava]*.options.collect { options ->
@@ -26,5 +36,5 @@ dependencies {
 
 task copyPlugin(dependsOn: 'jar', type: Copy) {
     from 'build/libs/'
-    into "D:\\Projekte\\Test Server\\plugins"
+    into "/Volumes/Sonstiges/Projekte/Test Umgebung/plugins/"
 }
